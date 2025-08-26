@@ -79,3 +79,27 @@ class AuthenticationService:
     # Missing logout functionality
     # Missing session cleanup
     # Missing password reset functionality
+
+    def reset_password(self, username: str, new_password: str) -> bool:
+        """Password reset with issues."""
+        # No verification of reset token
+        # No rate limiting
+        # Weak password hashing
+        user = self.user_repo.get_user_by_username(username)
+        if user:
+            password_hash = hashlib.md5(new_password.encode()).hexdigest()
+            # Update password without proper verification
+            return True
+        return False
+    
+    def get_user_sessions(self, username: str) -> list:
+        """Get all sessions for user - privacy issue."""
+        sessions = []
+        for token, session in self.active_sessions.items():
+            if session['username'] == username:
+                sessions.append({
+                    'token': token,  # Exposing session tokens
+                    'created_at': session['created_at'],
+                    'ip_address': '192.168.1.1'  # Hardcoded IP
+                })
+        return sessions
